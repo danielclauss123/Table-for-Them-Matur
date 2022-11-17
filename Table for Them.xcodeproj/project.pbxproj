@@ -272,7 +272,7 @@
 			children = (
 				7E819B5828A1919F00B67BAA /* App */,
 				7E819B5B28A191BA00B67BAA /* Model */,
-				7E819B8928A191E900B67BAA /* Firebase */,
+				7E819B8928A191E900B67BAA /* Server */,
 				7E819B9A28A1921800B67BAA /* Views */,
 				7E819A89289FC4D500B67BAA /* Assets.xcassets */,
 				7E819A93289FD96300B67BAA /* GoogleService-Info.plist */,
@@ -384,7 +384,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		7E819B8928A191E900B67BAA /* Firebase */ = {
+		7E819B8928A191E900B67BAA /* Server */ = {
 			isa = PBXGroup;
 			children = (
 				7E819B8A28A191E900B67BAA /* AccountManager.swift */,
@@ -393,7 +393,7 @@
 				7E819B8B28A191E900B67BAA /* Extensions */,
 				7E819B9128A191E900B67BAA /* Reference */,
 			);
-			path = Firebase;
+			path = Server;
 			sourceTree = "<group>";
 		};
 		7E819B8B28A191E900B67BAA /* Extensions */ = {

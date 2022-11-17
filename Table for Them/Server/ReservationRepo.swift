@@ -51,7 +51,7 @@ class ReservationRepo: ObservableObject {
         
         let reference = Firestore.collection(.reservations)
             .whereField("restaurantId", isEqualTo: userId)
-            .whereField("date", isGreaterThan: Timestamp(date: Date.now.addingTimeInterval(-60 * 60 * 24 * 30)))
+            .whereField("date", isGreaterThan: Timestamp(date: Date.now.addingTimeInterval(-60 * 60 * 24 * 7)))
             .order(by: "date")
         
         currentListener = reference.addSnapshotListener { snapshot, error in
