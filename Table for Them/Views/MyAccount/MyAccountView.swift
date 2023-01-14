@@ -63,6 +63,7 @@ struct MyAccountView: View {
                 await viewModel.loadRestaurant()
             }
         }
+        .navigationViewStyle(.stack)
     }
     
     // MARK: - Header

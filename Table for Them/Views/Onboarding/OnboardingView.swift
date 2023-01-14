@@ -29,6 +29,7 @@ struct OnboardingView: View {
             .navigationTitle("Willkommen")
             .navigationBarTitleDisplayMode(.inline)
         }
+        .navigationViewStyle(.stack)
     }
 }
 

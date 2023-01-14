@@ -13,6 +13,7 @@ struct SignInUpHomeView: View {
                 }
             }
         }
+        .navigationViewStyle(.stack)
     }
 }
 

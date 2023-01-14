@@ -33,11 +33,12 @@ struct RoomRowView: View {
             }
         }
         .swipeActions {
-            Button(role: .destructive) {
+            Button {
                 showingDeleteConfirmation = true
             } label: {
                 Label("Löschen", systemImage: "trash")
             }
+            .tint(.red)
             
             Button {
                 showingEditingSheet = true
