@@ -40,6 +40,9 @@ struct RoomListView: View {
             .sheet(isPresented: $showingNewRoomSheet) {
                 NewRoomView(viewModel: NewRoomViewModel(newRoomNumber: roomRepository.rooms.count + 1))
             }
+            
+            Text("Swipe vom rechten Rand, um einen Raum auszuwählen oder einen neuen zu erstellen.")
+                .foregroundColor(.secondary)
         }
     }
     
