@@ -26,7 +26,7 @@ struct BottomSheet<Background: ShapeStyle, Header: View, Content: View>: View {
     @ViewBuilder var header: () -> Header
     @ViewBuilder var content: () -> Content
     
-    @State private var minHeight = 100.0
+    @State private var minHeight = 0.0
     @GestureState private var translation = 0.0
     
     // MARK: - Body
@@ -42,14 +42,22 @@ struct BottomSheet<Background: ShapeStyle, Header: View, Content: View>: View {
                     
                     Divider()
                 }
-                .anchorPreference(key: HeaderPreferenceKey.self, value: .bounds) { [HeaderPreferenceData(bounds: $0)]
+                .anchorPreference(key: HeaderPreferenceKey.self, value: .bounds) {
+                    [HeaderPreferenceData(bounds: $0)]
                 }
                 
-                content()
-                    .clipped()
-                    //.disabled(sheetStatus == .middle || sheetStatus == .down)
-                
-                Spacer()
+                VStack(spacing: 0) {
+                    // The overlay is necessary, so that the Spacer always gets his space. Otherwise, Views like Text  didn't "shrunk", because they had a fixed size. This lead to unwanted, ugly UI.
+                    Color.clear
+                        .overlay {
+                            content()
+                        }
+                        .frame(maxHeight: .infinity)
+                        .clipped()
+                    
+                    Spacer()
+                        .frame(height: min(currentStatusOffset(in: geometry), geometry.size.height - minHeight))
+                }
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
             .background {
@@ -58,7 +66,7 @@ struct BottomSheet<Background: ShapeStyle, Header: View, Content: View>: View {
                     .ignoresSafeArea(.all, edges: .bottom)
                     .shadow(radius: sheetStatus == .hidden ? 0 : 2)
             }
-            .offset(y: max(currentStatusOffset(in: geometry) + translation, 0))
+            .offset(y: currentStatusOffset(in: geometry))
             .animation(.bottomSheet, value: translation)
             .animation(.bottomSheet, value: sheetStatus)
             .gesture(
@@ -70,26 +78,26 @@ struct BottomSheet<Background: ShapeStyle, Header: View, Content: View>: View {
                         let translation = value.translation.height
                         
                         switch sheetStatus {
-                            case .up:
-                                if translation > statusOffset(.middle, in: geometry) - 50 {
-                                    sheetStatus = .down
-                                } else if translation > 50 {
-                                    sheetStatus = .middle
-                                }
-                            case .middle:
-                                if translation > 50 {
-                                    sheetStatus = .down
-                                } else if translation < -50 {
-                                    sheetStatus = .up
-                                }
-                            case .down:
-                                if translation < statusOffset(.middle, in: geometry) - geometry.size.height + 50 {
-                                    sheetStatus = .up
-                                } else if translation < -50 {
-                                    sheetStatus = .middle
-                                }
-                            case .hidden:
-                                sheetStatus = .hidden // This case should not be possible.
+                        case .up:
+                            if translation > statusOffset(.middle, in: geometry) + 10 {
+                                sheetStatus = .down
+                            } else if translation > 50 {
+                                sheetStatus = .middle
+                            }
+                        case .middle:
+                            if translation > 50 {
+                                sheetStatus = .down
+                            } else if translation < -50 {
+                                sheetStatus = .up
+                            }
+                        case .down:
+                            if translation < statusOffset(.middle, in: geometry) - geometry.size.height - 10 {
+                                sheetStatus = .up
+                            } else if translation < -50 {
+                                sheetStatus = .middle
+                            }
+                        default:
+                            sheetStatus = .hidden
                         }
                     }
             )
@@ -118,7 +126,7 @@ struct BottomSheet<Background: ShapeStyle, Header: View, Content: View>: View {
     func statusOffset(_ status: BottomSheetStatus, in geometry: GeometryProxy) -> Double {
         switch status {
             case .up:
-                return 10
+            return min(10, geometry.size.height - minHeight)
             case .middle:
                 return min(geometry.size.height * 0.6, geometry.size.height - minHeight)
             case .down:
@@ -129,7 +137,7 @@ struct BottomSheet<Background: ShapeStyle, Header: View, Content: View>: View {
     }
     
     func currentStatusOffset(in geometry: GeometryProxy) -> Double {
-        statusOffset(sheetStatus, in: geometry)
+        max(statusOffset(sheetStatus, in: geometry) + translation, 0)
     }
     
     func callHeightsAfterStatusUpdate(in geometry: GeometryProxy) {

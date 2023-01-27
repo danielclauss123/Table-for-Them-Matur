@@ -2,9 +2,6 @@ import SwiftUI
 import FirebaseFirestore
 
 struct ContentView: View {
-    @State private var showingChangePasswordView = false
-    @State private var showingUpdateEmail = false
-    
     @StateObject var roomRepository: RoomRepository
     
     var body: some View {
@@ -14,10 +11,22 @@ struct ContentView: View {
                     Label("Reservationen", systemImage: "tray")
                 }
             
-            RoomListView(roomRepository: roomRepository)
-                .tabItem {
-                    Label("Tischpläne", systemImage: "rectangle.grid.2x2")
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    RoomListView(roomRepository: roomRepository)
+                    
+                    VStack(spacing: 0) {
+                        Divider()
+                        
+                        Rectangle().fill(.regularMaterial)
+                    }
+                    .frame(height: geometry.safeAreaInsets.bottom)
                 }
+                .ignoresSafeArea(edges: .bottom)
+            }
+            .tabItem {
+                Label("Tischpläne", systemImage: "rectangle.grid.2x2")
+            }
             
             MyAccountView()
                 .tabItem {
